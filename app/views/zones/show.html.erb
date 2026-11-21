@@ -1,0 +1,24 @@
+<p><%= link_to "← Все зоны", zones_path %></p>
+
+<h1><%= @zone.name %></h1>
+<p><strong>Тип:</strong> <%= @zone.zone_type.name %></p>
+<p><strong>Вместимость:</strong> <%= @zone.capacity %> чел.</p>
+<% if @zone.description.present? %>
+  <p><%= @zone.description %></p>
+<% end %>
+
+<h2>Рабочие места в этой зоне</h2>
+
+<% if @workspaces.any? %>
+  <ul>
+    <% @workspaces.each do |workspace| %>
+      <li style="margin-bottom: 8px;">
+        <%= link_to workspace.name, workspace_path(workspace) %>
+        — тип: <%= workspace.type %>,
+        вместимость: <%= workspace.capacity %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>В этой зоне пока нет рабочих мест.</p>
+<% end %>

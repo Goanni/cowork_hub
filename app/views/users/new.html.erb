@@ -1,0 +1,44 @@
+<h1>Регистрация в CoworkHub</h1>
+
+<% if @user.errors.any? %>
+  <div class="flash alert">
+    <strong>Не удалось зарегистрироваться:</strong>
+    <ul>
+      <% @user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: @user, url: signup_path, method: :post, local: true do |f| %>
+  <div>
+    <%= f.label :email, "Email" %>
+    <%= f.email_field :email, required: true, autofocus: true %>
+  </div>
+  <div>
+    <%= f.label :first_name, "Имя" %>
+    <%= f.text_field :first_name, required: true %>
+  </div>
+  <div>
+    <%= f.label :last_name, "Фамилия" %>
+    <%= f.text_field :last_name, required: true %>
+  </div>
+  <div>
+    <%= f.label :phone, "Телефон" %>
+    <%= f.telephone_field :phone %>
+  </div>
+  <div>
+    <%= f.label :password, "Пароль" %>
+    <%= f.password_field :password, required: true %>
+  </div>
+  <div>
+    <%= f.label :password_confirmation, "Повторите пароль" %>
+    <%= f.password_field :password_confirmation, required: true %>
+  </div>
+  <div>
+    <%= f.submit "Зарегистрироваться" %>
+  </div>
+<% end %>
+
+<p>Уже есть аккаунт? <%= link_to "Войти", login_path %></p>

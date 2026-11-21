@@ -1,0 +1,57 @@
+<p><%= link_to "← #{@workspace.zone.name}", zone_path(@workspace.zone) %></p>
+
+<h1><%= @workspace.name %></h1>
+<p><strong>Зона:</strong> <%= @workspace.zone.name %> (<%= @workspace.zone.zone_type.name %>)</p>
+<p><strong>Тип:</strong> <%= @workspace.type %></p>
+<p><strong>Вместимость:</strong> <%= @workspace.capacity %> чел.</p>
+<% if @workspace.description.present? %>
+  <p><%= @workspace.description %></p>
+<% end %>
+
+<h2>Удобства</h2>
+<% if @workspace.amenities.any? %>
+  <ul>
+    <% @workspace.amenities.each do |amenity| %>
+      <li><%= amenity.name %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Удобства не указаны.</p>
+<% end %>
+
+<h2>Оборудование</h2>
+<% if @workspace.equipment.any? %>
+  <ul>
+    <% @workspace.equipment.each do |eq| %>
+      <li><%= eq.name %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Оборудование не указано.</p>
+<% end %>
+
+<h2>Тарифы</h2>
+<% if @workspace.rates.any? %>
+  <table style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr style="background: #f0f0f0;">
+        <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Тариф</th>
+        <th style="border: 1px solid #ccc; padding: 8px; text-align: right;">Цена</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @workspace.rates.each do |rate| %>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;"><%= rate.rate_type.name %></td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: right;"><%= number_to_currency(rate.price, unit: "₽", separator: ",", delimiter: " ") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>Тарифы не указаны.</p>
+<% end %>
+
+<div style="margin-top: 20px;">
+  <p><em>Бронирование будет доступно после входа в систему.</em></p>
+</div>

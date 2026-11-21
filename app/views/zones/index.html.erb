@@ -1,0 +1,18 @@
+<h1>Зоны коворкинга</h1>
+
+<% if @zones.any? %>
+  <div class="zones-list">
+    <% @zones.each do |zone| %>
+      <div class="zone-card" style="border: 1px solid #ccc; padding: 16px; margin-bottom: 12px; border-radius: 6px;">
+        <h2><%= link_to zone.name, zone_path(zone) %></h2>
+        <p><strong>Тип:</strong> <%= zone.zone_type.name %></p>
+        <p><strong>Вместимость:</strong> <%= zone.capacity %> чел.</p>
+        <% if zone.description.present? %>
+          <p><%= zone.description %></p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p>Пока нет ни одной зоны.</p>
+<% end %>
