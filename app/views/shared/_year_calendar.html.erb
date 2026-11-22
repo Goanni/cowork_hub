@@ -1,0 +1,41 @@
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
+  <% calendar.each do |month_name, month_data| %>
+    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fff;">
+      <h3 style="margin-top: 0; text-align: center; color: #2c3e50;"><%= month_name %></h3>
+      
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; font-weight: bold; color: #666; margin-bottom: 5px;">
+        <% I18n.t('date.abbr_day_names').rotate(1).each do |day_name| %>
+          <div><%= day_name %></div>
+        <% end %>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;">
+        <% first_day = month_data[:month_date] %>
+        <% offset = (first_day.wday == 0 ? 6 : first_day.wday - 1) %>
+        <% offset.times do %>
+          <div></div>
+        <% end %>
+
+        <% month_data[:days].each do |day| %>
+          <% if day[:status] == :available %>
+            <a href="?workspace_id=<%= @workspace.id %>&date=<%= day[:date].strftime('%Y-%m-%d') %>" 
+               style="display: block; padding: 4px 0; background: #e8f5e9; border: 1px solid #4CAF50; border-radius: 4px; color: #2e7d32; text-decoration: none; text-align: center;" 
+               title="<%= day[:tooltip] %>">
+              <%= day[:date].day %>
+            </a>
+          <% elsif day[:status] == :partial %>
+            <a href="?workspace_id=<%= @workspace.id %>&date=<%= day[:date].strftime('%Y-%m-%d') %>" 
+               style="display: block; padding: 4px 0; background: #fff3e0; border: 1px solid #FF9800; border-radius: 4px; color: #E65100; text-decoration: none; text-align: center;" 
+               title="<%= day[:tooltip] %>">
+              <%= day[:date].day %>
+            </a>
+          <% else %>
+            <div style="padding: 4px 0; background: #f5f5f5; border: 1px solid #eee; border-radius: 4px; color: #aaa; text-align: center;" title="<%= day[:tooltip] %>">
+              <%= day[:date].day %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

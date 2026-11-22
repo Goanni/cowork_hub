@@ -1,0 +1,30 @@
+<h1>Мои брони</h1>
+
+<% if @bookings.any? %>
+  <table style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr style="background: #f0f0f0;">
+        <th style="border: 1px solid #ccc; padding: 8px;">Место</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">Начало</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">Конец</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">Статус</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">Сумма</th>
+        <th style="border: 1px solid #ccc; padding: 8px;"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @bookings.each do |booking| %>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;"><%= booking.workspace.name %></td>
+          <td style="border: 1px solid #ccc; padding: 8px;"><%= booking.start_time.strftime("%d.%m.%Y %H:%M") %></td>
+          <td style="border: 1px solid #ccc; padding: 8px;"><%= booking.end_time.strftime("%d.%m.%Y %H:%M") %></td>
+          <td style="border: 1px solid #ccc; padding: 8px;"><%= booking.status %></td>
+          <td style="border: 1px solid #ccc; padding: 8px;"><%= number_to_currency(booking.total_price, unit: "₽", separator: ",", delimiter: " ") %></td>
+          <td style="border: 1px solid #ccc; padding: 8px;"><%= link_to "Детали", booking_path(booking) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>У вас пока нет броней. <%= link_to "Выбрать место", zones_path %>.</p>
+<% end %>

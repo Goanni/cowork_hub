@@ -10,29 +10,21 @@
 
 <h2>Удобства</h2>
 <% if @workspace.amenities.any? %>
-  <ul>
-    <% @workspace.amenities.each do |amenity| %>
-      <li><%= amenity.name %></li>
-    <% end %>
-  </ul>
+  <ul><% @workspace.amenities.each do |amenity| %><li><%= amenity.name %></li><% end %></ul>
 <% else %>
   <p>Удобства не указаны.</p>
 <% end %>
 
 <h2>Оборудование</h2>
 <% if @workspace.equipment.any? %>
-  <ul>
-    <% @workspace.equipment.each do |eq| %>
-      <li><%= eq.name %></li>
-    <% end %>
-  </ul>
+  <ul><% @workspace.equipment.each do |eq| %><li><%= eq.name %></li><% end %></ul>
 <% else %>
   <p>Оборудование не указано.</p>
 <% end %>
 
 <h2>Тарифы</h2>
 <% if @workspace.rates.any? %>
-  <table style="border-collapse: collapse; width: 100%;">
+  <table style="border-collapse: collapse; width: 100%; margin-bottom: 20px;">
     <thead>
       <tr style="background: #f0f0f0;">
         <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Тариф</th>
@@ -53,5 +45,5 @@
 <% end %>
 
 <div style="margin-top: 20px;">
-  <p><em>Бронирование будет доступно после входа в систему.</em></p>
+  <%= link_to "Забронировать", new_booking_path(workspace_id: @workspace.id) %>
 </div>

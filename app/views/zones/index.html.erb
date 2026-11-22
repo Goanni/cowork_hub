@@ -1,5 +1,10 @@
 <h1>Зоны коворкинга</h1>
 
+<div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-size: 16px;">
+  <strong>Добро пожаловать в CoworkHub!</strong><br>
+  Наш коворкинг работает ежедневно с <strong><%= Workspace::WORK_START_HOUR %>:00</strong> до <strong><%= Workspace::WORK_END_HOUR %>:00</strong>.
+</div>
+
 <% if @zones.any? %>
   <div class="zones-list">
     <% @zones.each do |zone| %>

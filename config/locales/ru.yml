@@ -1,0 +1,36 @@
+ru:
+  date:
+    abbr_day_names:
+      - Вс
+      - Пн
+      - Вт
+      - Ср
+      - Чт
+      - Пт
+      - Сб
+    month_names:
+      -
+      - Январь
+      - Февраль
+      - Март
+      - Апрель
+      - Май
+      - Июнь
+      - Июль
+      - Август
+      - Сентябрь
+      - Октябрь
+      - Ноябрь
+      - Декабрь
+  time:
+    formats:
+      default: "%d.%m.%Y %H:%M"
+  activerecord:
+    errors:
+      models:
+        booking:
+          attributes:
+            start_time:
+              in_past: "не может быть в прошлом"
+            end_time:
+              before_start: "должно быть позже времени начала"

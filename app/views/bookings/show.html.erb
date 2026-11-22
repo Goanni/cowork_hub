@@ -1,0 +1,20 @@
+<p><%= link_to "← Мои брони", bookings_path %></p>
+
+<h1>Бронь #<%= @booking.id %></h1>
+<p><strong>Место:</strong> <%= @booking.workspace.name %></p>
+<p><strong>Зона:</strong> <%= @booking.workspace.zone.name %></p>
+<p><strong>Начало:</strong> <%= @booking.start_time.strftime("%d.%m.%Y %H:%M") %></p>
+<p><strong>Конец:</strong> <%= @booking.end_time.strftime("%d.%m.%Y %H:%M") %></p>
+<p><strong>Сумма:</strong> <%= number_to_currency(@booking.total_price, unit: "₽", separator: ",", delimiter: " ") %></p>
+<p><strong>Статус:</strong> <%= @booking.status %></p>
+
+<h2>История статусов</h2>
+<% if @history.any? %>
+  <ul>
+    <% @history.each do |h| %>
+      <li><%= h.status %> — <%= h.changed_at.strftime("%d.%m.%Y %H:%M") %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>История пуста.</p>
+<% end %>

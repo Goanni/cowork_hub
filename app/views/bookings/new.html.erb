@@ -1,0 +1,133 @@
+<p><%= link_to "← #{@workspace.name}", workspace_path(@workspace) %></p>
+
+<h1>Бронирование: <%= @workspace.name %></h1>
+<p><strong>Зона:</strong> <%= @workspace.zone.name %></p>
+
+<% if @booking.errors.any? %>
+  <div class="flash alert">
+    <ul>
+      <% @booking.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<h2>Календарь доступности</h2>
+<p><em>Нажмите на зелёный или оранжевый день.</em></p>
+<%= render "shared/year_calendar", calendar: @calendar %>
+
+<hr style="margin: 30px 0;">
+
+<%= form_with model: @booking, url: bookings_path, method: :post, local: true do |f| %>
+  <%= hidden_field_tag :workspace_id, @workspace.id %>
+
+  <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px;">
+    <strong>Внимание:</strong> Начало и конец брони должны быть в рабочие часы (<%= Workspace::WORK_START_HOUR %>:00 – <%= Workspace::WORK_END_HOUR %>:00). 
+  </div>
+
+  <div>
+    <%= f.label :start_time, "Начало" %>
+    <%= f.datetime_local_field :start_time, 
+          required: true, 
+          id: "booking_start_time",
+          min: Time.current.strftime("%Y-%m-%dT#{Workspace::WORK_START_HOUR}:00"),
+          step: 900 %>
+  </div>
+  <div>
+    <%= f.label :end_time, "Конец" %>
+    <%= f.datetime_local_field :end_time, 
+          required: true, 
+          id: "booking_end_time", 
+          step: 900 %>
+  </div>
+
+  <div style="margin: 20px 0; padding: 15px; background: #e8f5e9; border: 1px solid #4CAF50; border-radius: 5px;">
+    <h3 style="margin: 0; color: #2e7d32;">
+      Итоговая стоимость: <span id="calculated-price">0</span> ₽
+    </h3>
+    <p style="margin: 5px 0 0 0; font-size: 13px; color: #555;">
+      <em>Стоимость рассчитывается автоматически.</em>
+    </p>
+  </div>
+
+  <div>
+    <%= f.submit "Забронировать" %>
+  </div>
+<% end %>
+
+<script>
+  function initPriceCalculator() {
+    const startInput = document.getElementById("booking_start_time");
+    const endInput = document.getElementById("booking_end_time");
+    const priceDisplay = document.getElementById("calculated-price");
+
+    if (!startInput || !endInput || !priceDisplay) return;
+
+    function calculatePrice() {
+      if (!startInput.value || !endInput.value) {
+        priceDisplay.innerText = "0";
+        return;
+      }
+
+      const start = new Date(startInput.value);
+      const end = new Date(endInput.value);
+      
+      if (end <= start) {
+        priceDisplay.innerText = "Ошибка в датах";
+        return;
+      }
+
+      const diffHours = (end - start) / (1000 * 60 * 60);
+      
+      const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+      const diffTime = Math.abs(endDate - startDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+      const workHours = 22 - 7; 
+
+      const rates = [
+        { name: "Час", price: 150, hours: 1, days: 0 },
+        { name: "День", price: 800, hours: 0, days: 1 },
+        { name: "Неделя", price: 4500, hours: 0, days: 7 },
+        { name: "Месяц", price: 15000, hours: 0, days: 30 },
+        { name: "Полгода", price: 80000, hours: 0, days: 180 }
+      ];
+
+      let selectedRate;
+
+      if (diffDays === 1) {
+        if (diffHours >= workHours) {
+          selectedRate = rates.find(r => r.name === "День");
+          priceDisplay.innerText = new Intl.NumberFormat('ru-RU').format(selectedRate.price);
+        } else {
+          selectedRate = rates.find(r => r.hours > 0);
+          let units = Math.max(1, Math.ceil(diffHours / selectedRate.hours));
+          priceDisplay.innerText = new Intl.NumberFormat('ru-RU').format(selectedRate.price * units);
+        }
+        return;
+      }
+
+      let rateTypeName = "";
+      if (diffDays >= 2 && diffDays <= 6) rateTypeName = "День";
+      else if (diffDays >= 7 && diffDays <= 29) rateTypeName = "Неделя";
+      else if (diffDays >= 30 && diffDays <= 179) rateTypeName = "Месяц";
+      else rateTypeName = "Полгода";
+
+      selectedRate = rates.find(r => r.name === rateTypeName) || rates[1];
+      let units = Math.max(1, Math.ceil(diffDays / selectedRate.days));
+      priceDisplay.innerText = new Intl.NumberFormat('ru-RU').format(selectedRate.price * units);
+    }
+
+    startInput.addEventListener("change", calculatePrice);
+    endInput.addEventListener("change", calculatePrice);
+    startInput.addEventListener("input", calculatePrice);
+    endInput.addEventListener("input", calculatePrice);
+
+    calculatePrice();
+  }
+
+  document.addEventListener("turbo:load", initPriceCalculator);
+  document.addEventListener("DOMContentLoaded", initPriceCalculator);
+</script>
